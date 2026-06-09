@@ -46,13 +46,18 @@ def plot_image(img, label, name):
 
 
 def one_hot(label, depth=10):
-    """
-    one_hot编码
-    :param label:
-    :param depth:
-    :return:
-    """
+    # 第1步：创建一个全0矩阵，形状为 (batch_size, depth)
+    # label.size(0) 获取批次大小，depth 是类别总数
     out = torch.zeros(label.size(0), depth)
+    
+    # 第2步：将标签转换为 LongTensor 并调整形状为 (batch_size, 1)
+    # scatter_ 要求 index 的维度与输出张量匹配，这里需要2D索引
     idx = torch.LongTensor(label).view(-1, 1)
+    
+    # 第3步：核心操作 - 在指定位置填充1
+    # dim=1: 沿着列方向（类别维度）进行散射
+    # index=idx: 指定每一行中哪个列位置填1
+    # value=1: 填充的值
     out.scatter_(dim=1, index=idx, value=1)
+    
     return out
